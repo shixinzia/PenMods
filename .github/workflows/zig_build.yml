@@ -35,14 +35,22 @@ jobs:
 
     - name: Configure xmake
       run: |
-        xmake f -y \
+        ZIG_PATH=$(which zig)
+        echo "#!/bin/bash" > zig-cc
+        echo "$ZIG_PATH cc \"\$@\"" >> zig-cc
+        echo "#!/bin/bash" > zig-c++
+        echo "$ZIG_PATH c++ \"\$@\"" >> zig-c++
+        chmod +x zig-cc zig-c++
+        CC_PATH=$(pwd)/zig-cc
+        CXX_PATH=$(pwd)/zig-c++
+        xmake f -y -c \
           --plat=linux \
-          --arch=arm64-v8a \
+          --arch=aarch64 \
           --toolchain=zig \
-          --cc="zig cc" \
-          --cxx="zig c++" \
-          --ld="zig c++" \
-          --sh="zig c++" \
+          --cc="$CC_PATH" \
+          --cxx="$CXX_PATH" \
+          --ld="$CXX_PATH" \
+          --sh="$CXX_PATH" \
           --qt="$(pwd)/aarch64-linux-qt-5.15.2" \
           --build-platform=YDP02X \
           --target-channel=dev \
