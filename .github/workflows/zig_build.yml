@@ -51,23 +51,23 @@ jobs:
         echo "$ZIG_EXE ranlib \"\$@\"" >> zig-ranlib
         
         chmod +x zig-cc zig-c++ zig-ar zig-ranlib
-
-        export CC="$(pwd)/zig-cc"
-        export CXX="$(pwd)/zig-c++"
-        export AR="$(pwd)/zig-ar"
-        export RANLIB="$(pwd)/zig-ranlib"
+        
+        CC_PATH=$(pwd)/zig-cc
+        CXX_PATH=$(pwd)/zig-c++
+        AR_PATH=$(pwd)/zig-ar
+        RANLIB_PATH=$(pwd)/zig-ranlib
 
         xmake f -y -c \
           --plat=linux \
           --arch=arm64-v8a \
           --toolchain=zig \
           --kind=static \
-          --cc="$CC" \
-          --cxx="$CXX" \
-          --ld="$CXX" \
-          --sh="$CXX" \
-          --ar="$(pwd)/zig-ar" \
-          --ranlib="$(pwd)/zig-ranlib" \
+          --cc="$CC_PATH" \
+          --cxx="$CXX_PATH" \
+          --ld="$CXX_PATH" \
+          --sh="$CXX_PATH" \
+          --ar="$AR_PATH" \
+          --ranlib="$RANLIB_PATH" \
           --qt="$(pwd)/aarch64-linux-qt-5.15.2" \
           --build-platform=YDP02X \
           --target-channel=dev \
