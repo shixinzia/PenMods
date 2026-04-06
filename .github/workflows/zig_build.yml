@@ -35,12 +35,18 @@ jobs:
 
     - name: Configure xmake
       run: |
-        ZIG_PATH=$(which zig)
+        ZIG_EXE=$(which zig)
+
+        TARGET_STR="aarch64-linux-gnu.2.27"
+
         echo "#!/bin/bash" > zig-cc
-        echo "$ZIG_PATH cc \"\$@\"" >> zig-cc
+        echo "$ZIG_EXE cc -target $TARGET_STR \"\$@\"" >> zig-cc
+        
         echo "#!/bin/bash" > zig-c++
-        echo "$ZIG_PATH c++ \"\$@\"" >> zig-c++
+        echo "$ZIG_EXE c++ -target $TARGET_STR \"\$@\"" >> zig-c++
+        
         chmod +x zig-cc zig-c++
+        
         CC_PATH=$(pwd)/zig-cc
         CXX_PATH=$(pwd)/zig-c++
         xmake f -y -c \
@@ -55,11 +61,7 @@ jobs:
           --build-platform=YDP02X \
           --target-channel=dev \
           -m debug \
-          -vD \
-          --cxflags="-target aarch64-linux-gnu.2.27" \
-          --cxxflags="-target aarch64-linux-gnu.2.27" \
-          --ldflags="-target aarch64-linux-gnu.2.27" \
-          --shflags="-target aarch64-linux-gnu.2.27"
+          -vD
 
     - name: Build Project
       run: xmake build -v
