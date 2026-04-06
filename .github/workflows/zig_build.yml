@@ -37,27 +37,38 @@ jobs:
       run: |
         ZIG_EXE=$(which zig)
         TARGET_STR="aarch64-linux-gnu.2.27"
+        
+        mkdir -p my-toolchain
+        
+        echo "#!/bin/bash" > my-toolchain/target-cc
+        echo "$ZIG_EXE cc -target $TARGET_STR \"\$@\"" >> my-toolchain/target-cc
+        
+        echo "#!/bin/bash" > my-toolchain/target-cxx
+        echo "$ZIG_EXE c++ -target $TARGET_STR \"\$@\"" >> my-toolchain/target-cxx
+        
+        echo "#!/bin/bash" > my-toolchain/target-ar
+        echo "$ZIG_EXE ar \"\$@\"" >> my-toolchain/target-ar
+        
+        echo "#!/bin/bash" > my-toolchain/target-ranlib
+        echo "$ZIG_EXE ranlib \"\$@\"" >> my-toolchain/target-ranlib
+        
+        chmod +x my-toolchain/*
 
-        mkdir -p zig-bin
-
-        echo "#!/bin/bash" > zig-bin/gcc
-        echo "$ZIG_EXE cc -target $TARGET_STR \"\$@\"" >> zig-bin/gcc
+        CC_PATH=$(pwd)/my-toolchain/target-cc
+        CXX_PATH=$(pwd)/my-toolchain/target-cxx
+        AR_PATH=$(pwd)/my-toolchain/target-ar
+        RANLIB_PATH=$(pwd)/my-toolchain/target-ranlib
         
-        echo "#!/bin/bash" > zig-bin/g++
-        echo "$ZIG_EXE c++ -target $TARGET_STR \"\$@\"" >> zig-bin/g++
-        
-        echo "#!/bin/bash" > zig-bin/ar
-        echo "$ZIG_EXE ar \"\$@\"" >> zig-bin/ar
-        
-        echo "#!/bin/bash" > zig-bin/ranlib
-        echo "$ZIG_EXE ranlib \"\$@\"" >> zig-bin/ranlib
-        
-        chmod +x zig-bin/*
         xmake f -y -c \
           --plat=linux \
           --arch=arm64-v8a \
-          --toolchain=gcc \
-          --bin="$(pwd)/zig-bin" \
+          --toolchain=zig \
+          --cc="$CC_PATH" \
+          --cxx="$CXX_PATH" \
+          --ld="$CXX_PATH" \
+          --sh="$CXX_PATH" \
+          --ar="$AR_PATH" \
+          --ranlib="$RANLIB_PATH" \
           --kind=static \
           --qt="$(pwd)/aarch64-linux-qt-5.15.2" \
           --build-platform=YDP02X \
