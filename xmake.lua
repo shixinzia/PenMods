@@ -1,13 +1,22 @@
-add_rules('mode.release', 'mode.debug')
+toolchain("pen_toolchain")
+    set_kind("standalone")
+    set_bindir(os.projectdir() .. "/my-toolchain")
+    set_toolset("cc", "target-cc")
+    set_toolset("cxx", "target-cxx")
+    set_toolset("ar", "target-ar")
+    set_toolset("ranlib", "target-ranlib")
+toolchain_end()
+
+if is_arch("arm64-v8a") then
+    set_toolchains("pen_toolchain")
+endadd_rules('mode.release', 'mode.debug')
 
 add_requires('spdlog        1.15.3', {configs = {shared = false}})
 add_requires('elfio         3.12')
 add_requires('nlohmann_json 3.12.0')
 add_requires('dobby         2023.4.14')
 add_requires('lame          3.100', {configs = {frontend = false, nasm = false}})
-add_requires('libxcrypt     4.4.38', {
-    configs = {shared = false}
-})
+add_requires("libxcrypt 4.4.38", {configs = {shared = false, pic = true}})
 add_requires("libwebp       1.3.0")
 add_requires('librime       1.15.0')
 
