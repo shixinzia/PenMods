@@ -37,7 +37,7 @@ jobs:
       run: |
         ZIG_EXE=$(which zig)
         TARGET_STR="aarch64-linux-gnu.2.27"
-        
+
         mkdir -p my-toolchain
         
         echo "#!/bin/bash" > my-toolchain/target-cc
@@ -58,7 +58,7 @@ jobs:
         CXX_PATH=$(pwd)/my-toolchain/target-cxx
         AR_PATH=$(pwd)/my-toolchain/target-ar
         RANLIB_PATH=$(pwd)/my-toolchain/target-ranlib
-        
+
         xmake f -y -c \
           --plat=linux \
           --arch=arm64-v8a \
