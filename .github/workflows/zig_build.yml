@@ -37,37 +37,30 @@ jobs:
       run: |
         ZIG_EXE=$(which zig)
         TARGET_STR="aarch64-linux-gnu.2.27"
-
+        
         echo "#!/bin/bash" > zig-cc
         echo "$ZIG_EXE cc -target $TARGET_STR \"\$@\"" >> zig-cc
-        
         echo "#!/bin/bash" > zig-c++
         echo "$ZIG_EXE c++ -target $TARGET_STR \"\$@\"" >> zig-c++
-
         echo "#!/bin/bash" > zig-ar
         echo "$ZIG_EXE ar \"\$@\"" >> zig-ar
-
         echo "#!/bin/bash" > zig-ranlib
         echo "$ZIG_EXE ranlib \"\$@\"" >> zig-ranlib
-        
         chmod +x zig-cc zig-c++ zig-ar zig-ranlib
         
-        CC_PATH=$(pwd)/zig-cc
-        CXX_PATH=$(pwd)/zig-c++
-        AR_PATH=$(pwd)/zig-ar
-        RANLIB_PATH=$(pwd)/zig-ranlib
-
+        # 2. 配置 xmake
+        # --pkg_configs="lame:frontend=false": 彻底解决你之前的 lame 报错
+        # 因为词典笔只需要 lame 的库文件，不需要它的命令行工具(frontend)
         xmake f -y -c \
           --plat=linux \
           --arch=arm64-v8a \
           --toolchain=zig \
           --kind=static \
-          --cc="$CC_PATH" \
-          --cxx="$CXX_PATH" \
-          --ld="$CXX_PATH" \
-          --sh="$CXX_PATH" \
-          --ar="$AR_PATH" \
-          --ranlib="$RANLIB_PATH" \
+          --cc="$(pwd)/zig-cc" \
+          --cxx="$(pwd)/zig-c++" \
+          --ar="$(pwd)/zig-ar" \
+          --ranlib="$(pwd)/zig-ranlib" \
+          --pkg_configs="lame:frontend=false,lame:nasm=false" \
           --qt="$(pwd)/aarch64-linux-qt-5.15.2" \
           --build-platform=YDP02X \
           --target-channel=dev \
