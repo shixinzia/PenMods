@@ -7,10 +7,10 @@ add_requires('dobby         2023.4.14')
 add_requires('lame          3.100', {
     -- DictPen's buildroot exists lame v3.100,
     -- so we use it as a shared library.
-    configs = {shared = true}
+    configs = {shared = false}
 })
 add_requires('libxcrypt     4.4.38', {
-    configs = {shared = true}
+    configs = {shared = false}
 })
 add_requires("libwebp       1.3.0")
 add_requires('librime       1.15.0')
