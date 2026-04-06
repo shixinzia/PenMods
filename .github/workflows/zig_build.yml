@@ -45,7 +45,7 @@ jobs:
         CXX_PATH=$(pwd)/zig-c++
         xmake f -y -c \
           --plat=linux \
-          --arch=aarch64 \
+          --arch=arm64-v8a \
           --toolchain=zig \
           --cc="$CC_PATH" \
           --cxx="$CXX_PATH" \
