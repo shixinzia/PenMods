@@ -35,6 +35,8 @@ jobs:
 
     - name: Configure xmake
       run: |
+        export CC="zig cc"
+        export CXX="zig c++"
         xmake f -y \
           --qt="$(pwd)/aarch64-linux-qt-5.15.2" \
           --arch=arm64-v8a \
